@@ -1,9 +1,6 @@
 // https://api.openweathermap.org/data/2.5/weather?q=casablanca&appid=1c206efd5b7fea0c692f1eca31134062
 // https://api.openweathermap.org/data/2.5/forecast?q=casablanca&appid=1c206efd5b7fea0c692f1eca31134062&units=metric
 
-fetch('https://jsonplaceholder.typicode.com/todos/1')
-      .then(response => response.json())
-      .then(json => console.log(json))
 
 const apiKey = "1c206efd5b7fea0c692f1eca31134062";
 const city = "casablanca";
