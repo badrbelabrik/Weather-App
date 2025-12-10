@@ -11,9 +11,9 @@ const forecastUrl = 'https://api.openweathermap.org/data/2.5/forecast?q='+city+'
 fetch(currentUrl).then(response => response.json())
           .then(data => {
             document.getElementById("cityName").textContent = `${data.name}, ${data.sys.country}`;
-            document.getElementById("weatherStatus").textContent = data.weather.main;
+            document.getElementById("weatherStatus").textContent = data.weather[0].main;
             document.getElementById("temperature").textContent = `${(data.main.temp).toFixed(1)}°C`;
-            document.getElementById("wind").textContent = `Wind ${data.wind.speed}Km/hr`;
+            document.getElementById("wind").textContent = `Wind ${data.wind.speed} Km/hr`;
             document.getElementById("realFeel").textContent = `Real feel ${data.main.feels_like}°C`
             document.getElementById("humidity").textContent = `Humidity ${data.main.humidity}%`
             document.getElementById("pressure").textContent = `Pressure ${data.main.pressure} hPa`;
