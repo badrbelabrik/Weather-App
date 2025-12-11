@@ -3,16 +3,16 @@
 // https://api.api-ninjas.com/v1/worldtime
 
 const apiKey = "1c206efd5b7fea0c692f1eca31134062";
-const city = "beni-mellal";
+let Mycity = "beni-mellal";
 
-const currentUrl = 'https://api.openweathermap.org/data/2.5/weather?q='+city+'&appid='+apiKey+'&units=metric';
-const forecastUrl = 'https://api.openweathermap.org/data/2.5/forecast?q='+city+'&appid='+apiKey+'&units=metric';
-let currentData = [];
-let forecastData = [];
+const currentUrl = 'https://api.openweathermap.org/data/2.5/weather?q='+Mycity+'&appid='+apiKey+'&units=metric';
+const forecastUrl = 'https://api.openweathermap.org/data/2.5/forecast?q='+Mycity+'&appid='+apiKey+'&units=metric';
+
+
 fetch(currentUrl).then(response => response.json())
           .then(data => {
             // currentData.push(data);
-            currentData.push(data);
+            // currentData.push(data);
             document.getElementById("cityName").textContent = `${data.name}, ${data.sys.country}`;
             document.getElementById("weatherStatus").textContent = data.weather[0].main;
             document.getElementById("temperature").textContent = `${(data.main.temp).toFixed(1)}°C`;
@@ -22,11 +22,12 @@ fetch(currentUrl).then(response => response.json())
             document.getElementById("pressure").textContent = `Pressure ${data.main.pressure} hPa`;
             const weatherIcon = data.weather[0].icon;
             document.getElementById("typeIcon").src = `https://openweathermap.org/img/wn/${weatherIcon}@2x.png`; 
+            sunTime(data);
           })
           .catch(error => {
             console.log("Error fetching current weather data:", error);
           });
-console.log(currentData)
+
 fetch(forecastUrl).then(response => response.json())
                   .then(data => {
                     // getting 5 days data from the api  
@@ -53,20 +54,12 @@ fetch(forecastUrl).then(response => response.json())
                         temps.textContent = `${dailyData[i].temp}°C`;
                       
                         }
-                    console.log(dailyData);
-
+                    upcomingHours(data);
                   })
                     .catch(error => {
                         console.log("Error fethcing forecast data", error);
                     });
                   
-// fetch("https://api.api-ninjas.com/v1/worldtime?city=London").then(response => response.json())
-//                     .then(data => {
-//                       // document.getElementById("date").textContent = data.
-//                     })
-//                       .catch(error => {
-//                         console.log("there is an error",error);
-//                       });
 
 function upcomingDays() {
 
@@ -74,27 +67,89 @@ function upcomingDays() {
         const date = new Date();
     for (let i = 0; i < 5; i++) {
 
-        date.setDate(date.getDate() + i);
+        date.setDate(date.getDate() + 1);
 
         const dayName = date.toLocaleDateString("en-US", { weekday: "long" });
 
         const day = document.createElement("div");
         day.classList.add("day");
-
-        day.innerHTML = `
-            <h4>${i === 0 ? "Today" : dayName}</h4>
+        if(i == 0){
+          day.innerHTML=`<h4>Today</h4>
             <img id="dayIcon">
-            <h3></h3>
-        `;
-        daysList.appendChild(day);
+            <h3></h3>`;
+            daysList.appendChild(day);
+        }else{
+            day.innerHTML=`<h4>${dayName}</h4>
+            <img id="dayIcon">
+            <h3></h3>`;
+            daysList.appendChild(day);
+        }
+        
     }
     const hour = `${String(date.getHours())}:${String(date.getMinutes())}`;
     const formattedDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${date.getFullYear()} ${hour}`;
     const today = document.getElementById("date");
     today.textContent = `Today : ${formattedDate}` 
-    console.log(hour)
+  
 }
 
-// document.addEventListener("DOMContentLoaded", () => {
-//     upcomingDays();
-// });
+
+function upcomingHours(data){
+    const hoursList = document.querySelector(".hours-list");
+    for(let i=0; i<5; i++){
+    const hour = document.createElement("div");
+    hour.classList.add("hour");
+    hour.innerHTML = `<h3>${data.list[i].dt_txt.slice(11,16)}</h3>
+                      <img id="hourIcon" src="https://openweathermap.org/img/wn/${data.list[i].icon}@2x.png"></img>
+                      <h4></h4>`
+    hoursList.appendChild(hour);
+    }
+    const hours = document.querySelectorAll(".hour");
+    for(let i=0; i<hours.length; i++){
+      
+      const h3 = hours[i].querySelector("h3");
+      const img = hours[i].querySelector("img");
+      const temp = hours[i].querySelector("h4")
+      h3.textContent = data.list[i].dt_txt.slice(11,16);
+      const icon = data.list[i].weather[0].icon;
+      img.src = `https://openweathermap.org/img/wn/${icon}@2x.png`;
+      temp.textContent = `${(data.list[i].main.temp).toFixed(0)}°C`;
+      hours[i].appendChild(h3);
+      hours[i].appendChild(img);
+      hours[i].appendChild(temp);
+    }
+  }
+
+  function sunTime(data){
+      const sunrise = data.sys.sunrise;
+      const sunset = data.sys.sunset;
+      
+      document.getElementById("sunriseTime").textContent = convertUnixToTime(sunrise);
+      document.getElementById("sunsetTime").textContent = convertUnixToTime(sunset);
+      }
+      
+
+  function convertUnixToTime(unixTime) {
+  const date = new Date(unixTime * 1000);  // convert to ms
+  const hours = date.getHours().toString().padStart(2, "0");
+  const minutes = date.getMinutes().toString().padStart(2, "0");
+  return `${hours}:${minutes}`;
+}
+
+function searchCity(){
+  const searchBox = document.getElementById("cityInput")
+  searchBox.addEventListener("keydown", function(event){
+    if(event.key === "Enter"){
+      let city = searchBox.value;
+      if(city != ""){
+            Mycity = city;
+      }
+      fetch(currentUrl);
+    }
+  })
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+     searchCity();
+});
+

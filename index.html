@@ -8,8 +8,8 @@
     </head>
     <body>
         <div class="main">
-                    <div class="search-box">
-            <input type="text" placeholder="Search for location">
+            <div class="search-box">
+            <input id="cityInput" type="text" placeholder="Search for location">
         </div>
         <div class="location-time">
                   <h2 id="cityName"></h2>
@@ -31,8 +31,11 @@
                 </div>
         </div>
         <div class="forecast">
-            <h3 id="hour">hour</h3>
-            <img id="hourIcon" src="icons/snowy-4.svg">
+            <h3>upcoming hours</h3>
+            <div class="hours-list">
+            
+            </div>
+
         </div>
         <div class="air-condition">
             <h2>Air Conditions</h2>
@@ -41,8 +44,16 @@
             <h3><img src="icons/humidity.png"><span id="humidity"></span></h3>
             <h3><img src="icons/pressure.png"><span id="pressure"></span></h3>
         </div>
-        <div class="sunrise">
-                SUNRISE & SUNSET
+        <div class="sun-time">
+            <div class="sunrise">
+                <img src="icons/sunrise.png">
+                <h3 id="sunriseTime"></h3>
+            </div>
+            <div class="sunset">
+                <img src="icons/sunset.png">
+                <h3 id="sunsetTime"></h3>
+            </div>
+                
         </div>
     </div>
 
