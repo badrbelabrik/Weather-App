@@ -8,10 +8,53 @@ let Mycity = "beni-mellal";
 const currentUrl = 'https://api.openweathermap.org/data/2.5/weather?q='+Mycity+'&appid='+apiKey+'&units=metric';
 const forecastUrl = 'https://api.openweathermap.org/data/2.5/forecast?q='+Mycity+'&appid='+apiKey+'&units=metric';
 
-
-fetch(currentUrl).then(response => response.json())
+function fetchingCity(Mycity){
+  const apiKey = "1c206efd5b7fea0c692f1eca31134062";
+  const currentUrl = 'https://api.openweathermap.org/data/2.5/weather?q='+Mycity+'&appid='+apiKey+'&units=metric';
+  const forecastUrl = 'https://api.openweathermap.org/data/2.5/forecast?q='+Mycity+'&appid='+apiKey+'&units=metric';
+      fetch(currentUrl).then(response => response.json())
           .then(data => {
-            document.getElementById("cityName").textContent = `${data.name}, ${data.sys.country}`;
+            currentWeather(data);
+            sunTime(data);
+          })
+          .catch(error => {
+            console.log("Error fetching current weather data:", error);
+          });
+      fetch(forecastUrl).then(response => response.json())
+                  .then(data => {
+
+                    upcomingDays(data);
+                    upcomingHours(data);
+                  })
+                    .catch(error => {
+                        console.log("Error fethcing forecast data", error);
+                    });
+  }
+
+  fetch(currentUrl).then(response => response.json())
+          .then(data => {
+            currentWeather(data);
+            sunTime(data);
+          })
+          .catch(error => {
+            console.log("Error fetching current weather data:", error);
+          });
+
+
+
+
+
+fetch(forecastUrl).then(response => response.json())
+                  .then(data => {
+
+                    upcomingDays(data);
+                    upcomingHours(data);
+                  })
+                    .catch(error => {
+                        console.log("Error fethcing forecast data", error);
+                    });
+function currentWeather(data){
+              document.getElementById("cityName").textContent = `${data.name}, ${data.sys.country}`;
             document.getElementById("weatherStatus").textContent = data.weather[0].main;
             document.getElementById("temperature").textContent = `${(data.main.temp).toFixed(1)}°C`;
             document.getElementById("wind").textContent = `Wind ${data.wind.speed} Km/hr`;
@@ -19,16 +62,11 @@ fetch(currentUrl).then(response => response.json())
             document.getElementById("humidity").textContent = `Humidity ${data.main.humidity}%`
             document.getElementById("pressure").textContent = `Pressure ${data.main.pressure} hPa`;
             const weatherIcon = data.weather[0].icon;
-            document.getElementById("typeIcon").src = `https://openweathermap.org/img/wn/${weatherIcon}@2x.png`; 
-            sunTime(data);
-          })
-          .catch(error => {
-            console.log("Error fetching current weather data:", error);
-          });
+            document.getElementById("typeIcon").src = `https://openweathermap.org/img/wn/${weatherIcon}@2x.png`;
+}              
 
-fetch(forecastUrl).then(response => response.json())
-                  .then(data => {
-                    // getting 5 days data from the api  
+function upcomingDays(data) {
+                          // getting 5 days data from the api  
                     const dailyData = [];
                     for (let item of data.list) {
                       const date = item.dt_txt.split(" ")[0];
@@ -39,28 +77,11 @@ fetch(forecastUrl).then(response => response.json())
                       icon: item.weather[0].icon
                         });
                       }
-                        if (dailyData.length === 5) break; // we only need 5 days
+                        if (dailyData.length === 5) break;
                           }
-                      upcomingDays();
-                    // assign icons and temperature for upcoming 5 days   
-                          const days = document.querySelectorAll(".day");
-                        
-                        for(i=0; i<dailyData.length; i++){
-                        const img = days[i].querySelector("img");
-                        const temps = days[i].querySelector("h3");
-                        img.src = `https://openweathermap.org/img/wn/${dailyData[i].icon}@2x.png`;
-                        temps.textContent = `${dailyData[i].temp}°C`;
-                      
-                        }
-                    upcomingHours(data);
-                  })
-                    .catch(error => {
-                        console.log("Error fethcing forecast data", error);
-                    });
-                  
 
-function upcomingDays() {
-
+      /////////////////////////////////////////////////////
+      //  creating days list elements
     const daysList = document.querySelector(".days-list");
         const date = new Date();
     for (let i = 0; i < 5; i++) {
@@ -72,7 +93,7 @@ function upcomingDays() {
         const day = document.createElement("div");
         day.classList.add("day");
         if(i == 0){
-          day.innerHTML=`<h4>Today</h4>
+          day.innerHTML=`<h4>Tomorrow</h4>
             <img id="dayIcon">
             <h3></h3>`;
             daysList.appendChild(day);
@@ -87,7 +108,18 @@ function upcomingDays() {
     const hour = `${String(date.getHours())}:${String(date.getMinutes())}`;
     const formattedDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${date.getFullYear()} ${hour}`;
     const today = document.getElementById("date");
-    today.textContent = `Today : ${formattedDate}` 
+    today.textContent = `Today : ${formattedDate}`
+    /////////////////////////////////////////////////// 
+                        // assign icons and temperature for upcoming 5 days   
+                        const days = document.querySelectorAll(".day");
+                        
+                        for(i=0; i<dailyData.length; i++){
+                        const img = days[i].querySelector("img");
+                        const temps = days[i].querySelector("h3");
+                        img.src = `https://openweathermap.org/img/wn/${dailyData[i].icon}@2x.png`;
+                        temps.textContent = `${dailyData[i].temp}°C`;
+                        
+                        }
   
 }
 
@@ -140,14 +172,52 @@ function searchCity(){
     if(event.key === "Enter"){
       let city = searchBox.value;
       if(city != ""){
-            Mycity = city;
+            const days = document.querySelectorAll(".day")
+            for(day of days){
+              day.remove()
+            }
+            
+            const hours = document.querySelectorAll(".hour")
+            for(hour of hours){
+              hour.remove()
+            }
+            
+            fetchingCity(city);
       }
-      fetch(currentUrl);
     }
   })
+}
+
+function darkMode(){
+    const body = document.querySelector("body")
+    body.style.background = "#9C9C9C"
+    const main = document.querySelector(".main")
+    main.style.background = "#595959"
+    const upcomingDays = document.querySelector(".upcoming-days")
+    upcomingDays.style.background = "#A3A3A3"
+    const upcomingHours = document.querySelector(".forecast")
+    upcomingHours.style.background = "#A3A3A3"
+    const airCondition = document.querySelector(".air-condition")
+    airCondition.style.background = "#A3A3A3"
 }
 
 document.addEventListener("DOMContentLoaded", () => {
      searchCity();
 });
+
+// .air-condition h2 {
+//     margin-bottom: 14px;
+// }
+
+// .air-condition h3 {
+//     display: flex;
+//     align-items: center;
+//     margin-bottom: 10px;
+// }
+
+// .air-condition img {
+//     width: 21px;
+//     height: 21px;
+//     margin-right: 7px;
+// }
 

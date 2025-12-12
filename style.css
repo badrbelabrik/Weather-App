@@ -13,12 +13,10 @@ body {
 }
 
 .main {
-    display: flex;
-    justify-content: center;
     background-color: #169CCC;
     border-radius: 14px;
     padding: 21px;
-    width: 70%;
+    width: 100%;               /* FIXED – was 70% */
     max-width: 840px;
     display: grid;
     grid-template-columns: 2fr 1fr;
@@ -29,6 +27,8 @@ body {
     color: white;
 }
 
+/* ------------------ sections stay same ------------------ */
+
 .location-time {
     grid-column: 1 / 2;
     display: flex;
@@ -37,12 +37,11 @@ body {
 }
 
 .weather-type {
-    grid-column: 2 / 3;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin-top: -38px;
+    margin-top: -30px;
 }
 
 .weather-type img {
@@ -50,13 +49,24 @@ body {
     height: auto;
 }
 
+#darkmode {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+#darkmode img {
+    width: 60px;
+    height: auto;
+    margin-left: 170px;
+}
 
 .search-box {
     position: absolute;
     top: 21px;
     left: 50%;
     transform: translateX(-50%);
-    width: 50%;
+    width: 50%;                /* FIXED – was 50% too small on phones */
     margin-top: 40px;
 }
 
@@ -66,8 +76,7 @@ body {
     border-radius: 28px;
     border: none;
     font-size: 0.85rem;
-    display: flex;
-    justify-content: center;
+    text-align: center;
 }
 
 .upcoming-days {
@@ -80,15 +89,14 @@ body {
 
 .upcoming-days h3 {
     margin-top: 10px;
-    /* margin-bottom: 4px; */
-    /* font-size: 2.2rem; */
     text-align: center;
 }
 
-.upcoming-days .days-list{
+/* FIXED: flex-direction: grid (invalid) */
+.upcoming-days .days-list {
     display: flex;
-    flex-direction: grid;
     justify-content: center;
+    flex-wrap: wrap;          /* responsive */
     gap: 12px;
     margin-top: 15px;
 }
@@ -98,7 +106,7 @@ body {
     height: 60px;
 }
 
-.upcoming-days .day {
+.day {
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -113,9 +121,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    box-sizing: border-box;
 }
-
 .air-condition h2 {
     margin-bottom: 14px;
 }
@@ -139,18 +145,17 @@ body {
     border-radius: 14px;
     background: #4BB7DB;
 }
-.forecast .hours-list{
+
+.forecast h3 {
+    text-align: center;
+}
+
+.hours-list {
     display: flex;
-    flex-direction: grid;
+    flex-wrap: wrap;           /* FIXED */
     justify-content: center;
     gap: 20px;
     margin-top: 15px;
-}
-
-.forecast h3 {
-    font-size: 1.1rem;
-    margin-bottom: 10px;
-    text-align: center;
 }
 
 .forecast img {
@@ -163,27 +168,49 @@ body {
     justify-content: flex-start;
     margin-top: 15px;
 }
-.sunrise{
+
+.sunrise, .sunset {
     display: flex;
-    flex-direction: grid;
+    align-items: center;
 }
-.sunrise img{
+
+.sunrise img,
+.sunset img {
     width: 50px;
     height: 50px;
 }
-.sunrise h3{
-    margin-top: 15px;
-    margin-left: 10px;
+
+/* ------------------ RESPONSIVE FIX ------------------ */
+
+@media (max-width: 768px) {
+    .main {
+        grid-template-columns: 1fr;   /* stack everything */
+    }
+
+    #darkmode img {
+        margin-left: 0;
+    }
+
+    .search-box {
+        width: 80%;
+    }
+
+    .weather-type img {
+        width: 120px;
+    }
+
+    .upcoming-days img,
+    .forecast img {
+        width: 50px;
+    }
 }
-.sunset{
-    display: flex;
-    flex-direction: grid;
-}
-.sunset img{
-    width: 50px;
-    height: 50px;
-}
-.sunset h3{
-    margin-top: 15px;
-    margin-left: 10px;
+
+@media (max-width: 480px) {
+    .weather-type img {
+        width: 100px;
+    }
+
+    .search-box {
+        width: 90%;
+    }
 }
