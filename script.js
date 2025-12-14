@@ -8,10 +8,8 @@ let Mycity = "beni-mellal";
 const currentUrl = 'https://api.openweathermap.org/data/2.5/weather?q='+Mycity+'&appid='+apiKey+'&units=metric';
 const forecastUrl = 'https://api.openweathermap.org/data/2.5/forecast?q='+Mycity+'&appid='+apiKey+'&units=metric';
 
-function fetchingCity(Mycity){
-  const apiKey = "1c206efd5b7fea0c692f1eca31134062";
-  const currentUrl = 'https://api.openweathermap.org/data/2.5/weather?q='+Mycity+'&appid='+apiKey+'&units=metric';
-  const forecastUrl = 'https://api.openweathermap.org/data/2.5/forecast?q='+Mycity+'&appid='+apiKey+'&units=metric';
+function fetchingCity(currentUrl,forecastUrl){
+  
       fetch(currentUrl).then(response => response.json())
           .then(data => {
             currentWeather(data);
@@ -31,28 +29,30 @@ function fetchingCity(Mycity){
                     });
   }
 
-  fetch(currentUrl).then(response => response.json())
-          .then(data => {
-            currentWeather(data);
-            sunTime(data);
-          })
-          .catch(error => {
-            console.log("Error fetching current weather data:", error);
-          });
+//   fetch(currentUrl).then(response => response.json())
+//           .then(data => {
+//             currentWeather(data);
+//             sunTime(data);
+//           })
+//           .catch(error => {
+//             console.log("Error fetching current weather data:", error);
+//           });
 
 
 
 
 
-fetch(forecastUrl).then(response => response.json())
-                  .then(data => {
+// fetch(forecastUrl).then(response => response.json())
+//                   .then(data => {
 
-                    upcomingDays(data);
-                    upcomingHours(data);
-                  })
-                    .catch(error => {
-                        console.log("Error fethcing forecast data", error);
-                    });
+//                     upcomingDays(data);
+//                     upcomingHours(data);
+//                   })
+//                     .catch(error => {
+//                         console.log("Error fethcing forecast data", error);
+//                     });
+
+
 function currentWeather(data){
               document.getElementById("cityName").textContent = `${data.name}, ${data.sys.country}`;
             document.getElementById("weatherStatus").textContent = data.weather[0].main;
@@ -105,7 +105,7 @@ function upcomingDays(data) {
         }
         
     }
-    const hour = `${String(date.getHours())}:${String(date.getMinutes())}`;
+    const hour = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
     const formattedDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${date.getFullYear()} ${hour}`;
     const today = document.getElementById("date");
     today.textContent = `Today : ${formattedDate}`
@@ -181,8 +181,9 @@ function searchCity(){
             for(hour of hours){
               hour.remove()
             }
-            
-            fetchingCity(city);
+            const currentUrl = 'https://api.openweathermap.org/data/2.5/weather?q='+city+'&appid=1c206efd5b7fea0c692f1eca31134062&units=metric';
+            const forecastUrl = 'https://api.openweathermap.org/data/2.5/forecast?q='+city+'&appid=1c206efd5b7fea0c692f1eca31134062&units=metric';
+            fetchingCity(currentUrl,forecastUrl);
       }
     }
   })
@@ -194,30 +195,30 @@ function darkMode(){
     const main = document.querySelector(".main")
     main.style.background = "#595959"
     const upcomingDays = document.querySelector(".upcoming-days")
-    upcomingDays.style.background = "#A3A3A3"
+    upcomingDays.style.background = "#a3a3a386"
     const upcomingHours = document.querySelector(".forecast")
-    upcomingHours.style.background = "#A3A3A3"
+    upcomingHours.style.background = "#a3a3a386"
     const airCondition = document.querySelector(".air-condition")
-    airCondition.style.background = "#A3A3A3"
+    airCondition.style.background = "#a3a3a386"
+}
+
+function getPosition(){
+    function success(pos){
+        const lat = pos.coords.latitude;
+        const long = pos.coords.longitude;
+        const currentUrl = `https://api.openweathermap.org/data/2.5/weather?lat=`+lat+`&lon=`+long+`&appid=1c206efd5b7fea0c692f1eca31134062&units=metric`;
+        const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=`+lat+`&lon=`+long+`&appid=1c206efd5b7fea0c692f1eca31134062&units=metric`;
+        fetchingCity(currentUrl,forecastUrl)
+    }
+    function error(){
+      console.log("enable to retrieve position")
+    }
+    navigator.geolocation.getCurrentPosition(success, error);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-     searchCity();
+  getPosition();
+  searchCity();
 });
 
-// .air-condition h2 {
-//     margin-bottom: 14px;
-// }
-
-// .air-condition h3 {
-//     display: flex;
-//     align-items: center;
-//     margin-bottom: 10px;
-// }
-
-// .air-condition img {
-//     width: 21px;
-//     height: 21px;
-//     margin-right: 7px;
-// }
 

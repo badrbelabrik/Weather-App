@@ -50,6 +50,7 @@ body {
 }
 
 #darkmode {
+    align-self: flex-end;
     background: none;
     border: none;
     cursor: pointer;
@@ -58,7 +59,6 @@ body {
 #darkmode img {
     width: 60px;
     height: auto;
-    margin-left: 170px;
 }
 
 .search-box {
@@ -77,6 +77,7 @@ body {
     border: none;
     font-size: 0.85rem;
     text-align: center;
+    outline: none;
 }
 
 .upcoming-days {
