@@ -154,8 +154,8 @@ function upcomingHours(data){
       const sunrise = data.sys.sunrise;
       const sunset = data.sys.sunset;
       
-      document.getElementById("sunriseTime").textContent = convertUnixToTime(sunrise);
-      document.getElementById("sunsetTime").textContent = convertUnixToTime(sunset);
+      document.getElementById("sunriseTime").textContent = `: ${convertUnixToTime(sunrise)} AM`;
+      document.getElementById("sunsetTime").textContent = `: ${convertUnixToTime(sunset)} PM`;
       }
       
 
